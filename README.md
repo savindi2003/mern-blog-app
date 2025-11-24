@@ -57,7 +57,7 @@ App will run at: ```http://localhost:3000```
 ---
 ## 🖥️ Backend Setup
 
-Backend code is implemented in Java and hosted in a separate repository:
-  - [https://github.com/savindi2003/chatme-app-server.git ](https://github.com/savindi2003/blog-app-backend.git)
+Backend code is implemented in Node.js and hosted in a separate repository:
+[https://github.com/savindi2003/blog-app-backend.git](https://github.com/savindi2003/blog-app-backend.git)
 
 ---
