@@ -1,70 +1,63 @@
-# Getting Started with Create React App
+# 📝 MERN Stack Blog Web Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[![Frontend](https://img.shields.io/badge/frontend-React-blue)]()
+[![Backend](https://img.shields.io/badge/backend-Node.js-orange)]()
+[![Framework](https://img.shields.io/badge/framework-Express.js-lightgrey)]()
+[![Database](https://img.shields.io/badge/database-MongoDB-green)]()
+[![Authentication](https://img.shields.io/badge/authentication-JWT-yellow)]()
+[![License](https://img.shields.io/badge/license-MIT-success)]()
 
-## Available Scripts
 
-In the project directory, you can run:
+A full-stack **blog web application** built with **MongoDB, Express.js, React.js, Node.js** (MERN stack).  
+Users can create, update, delete, and read blog posts with authentication and role-based access.
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 🚀 Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- 🔑 **User Authentication**: Sign up, log in, JWT-based auth  
+- ✍️ **CRUD Operations**: Create, read, update, delete posts  
+- 🏷️ **Categories & Tags**: Organize posts easily  
+- 📱 **Responsive Design**: Works on mobile and desktop  
+- ☁️ **Cloud Image Upload**: Powered by Cloudinary (optional)  
+- 👨‍💻 **Admin/Author Roles**: Manage content securely  
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🛠️ Tech Stack
 
-### `npm run build`
+| Frontend | Backend | Database | Authentication | Other Tools |
+|----------|---------|---------|----------------|-------------|
+| ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB) | ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white) | ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white) | ![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge) | ![Axios](https://img.shields.io/badge/Axios-000000?style=for-the-badge&logo=axios&logoColor=white) |
+| Tailwind CSS | Express.js | Mongoose |  | Cloudinary |
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
+## ⚡ Installation
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. **Clone the repository**
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+git clone https://github.com/yourusername/your-repo-name.git
+cd your-repo-name
+```
+2. **Install dependencies**
+   
+```bash
+npm install
+```
 
-### `npm run eject`
+3. **Start the development server**
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+npm start
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+App will run at: ```http://localhost:3000```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
+## 🖥️ Backend Setup
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Backend code is implemented in Java and hosted in a separate repository:
+  - [https://github.com/savindi2003/chatme-app-server.git ](https://github.com/savindi2003/blog-app-backend.git)
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
