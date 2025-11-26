@@ -256,7 +256,7 @@ function BlogItem({ blog, currentUserId, onLikeUpdate }) {
 
 
     return (
-        <div className='transition duration-300 bg-white rounded-lg shadow-md cursor-pointer w-96 h-fit hover:shadow-2xl'>
+        <div className='h-full transition duration-300 bg-white rounded-lg shadow-md cursor-pointer w-96 hover:shadow-2xl'>
 
             <div className="flex items-center justify-between p-4">
 

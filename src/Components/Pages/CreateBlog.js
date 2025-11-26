@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Nav from '../Nav/Nav';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom'
+import UserNotLogin from './UserNotLogin';
+import Footer from '../Nav/Footer';
 
 function CreateBlog() {
 
@@ -13,6 +15,14 @@ function CreateBlog() {
     const [category, setCategory] = useState("");
     const [tags, setTags] = useState("");
     const [loading, setLoading] = useState(false);
+
+
+    const [isEmpty, setIsEmpty] = useState(false);
+    const [emptyMsg, setEmptyMsg] = useState("")
+    const [isError, setIsError] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("")
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [successMsg, setSuccessMsg] = useState("")
 
     const history = useNavigate();
 
@@ -32,41 +42,70 @@ function CreateBlog() {
         e.preventDefault();
 
         if (!coverImage) {
-            alert("Please upload a cover image!");
-            return;
-        }
+            setIsEmpty(true)
+            setEmptyMsg("Please upload a cover image");
+        } else if (!title) {
+            setIsEmpty(true)
+            setEmptyMsg("Please enter title");
+        } else if (!content) {
+            setIsEmpty(true)
+            setEmptyMsg("Please enter content");
+        } else if (!category) {
+            setIsEmpty(true)
+            setEmptyMsg("Please select a category");
+        } else if (!tags) {
+            setIsEmpty(true)
+            setEmptyMsg("Please add some tags");
+        } else {
 
-        setLoading(true)
+            setLoading(true)
+            setIsEmpty(false)
 
-        try {
-            const formData = new FormData();
-            formData.append("title", title);
-            formData.append("content", content);
-            formData.append("author", user.id);
-            formData.append("category", category);
-            formData.append("tags", tags.split(",").map(t => t.trim()));
-            formData.append("coverImage", coverImage); // File object
+            try {
+                const formData = new FormData();
+                formData.append("title", title);
+                formData.append("content", content);
+                formData.append("author", user.id);
+                formData.append("category", category);
+                formData.append("tags", tags.split(",").map(t => t.trim()));
+                formData.append("coverImage", coverImage); // File object
 
-            const response = await axios.post(
-                "http://localhost:5000/api/posts",
-                formData,
-                {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                }
-            );
+                const response = await axios.post(
+                    "http://localhost:5000/api/posts",
+                    formData,
+                    {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    }
+                );
 
 
-            alert("Blog posted successfully!");
-            console.log(response.data);
-            
+                alert("Blog posted successfully!");
+                console.log(response.data);
 
-        } catch (error) {
-            console.log(error);
-            alert("Error creating blog!");
-        } finally {
-            setLoading(false)
+                setIsSuccess(true)
+                setSuccessMsg("Blog was posted successfully. Check the posts page")
+                setIsEmpty(false)
+
+                setTitle("");
+                setContent("");
+                setCategory("");
+                setTags("");
+                setCoverImage(null);
+                setPreview(null);
+
+
+
+
+            } catch (error) {
+                console.log(error);
+                setIsSuccess(false)
+                setIsError(true)
+                setErrorMsg("Opps.. Something went wrong. Please try again later")
+            } finally {
+                setLoading(false)
+            }
         }
     }
 
@@ -89,10 +128,11 @@ function CreateBlog() {
 
         fetchProfile();
     }, []);
-    if (!user) return <p>Loading...</p>;
+    if (!user) return <UserNotLogin/>;
 
     return (
         // 💾 පිටතම Container එක
+        <>
         <div className="flex items-center justify-center min-h-screen p-4 bg-purple-50">
 
             <div className="fixed top-0 left-0 z-50 w-full shadow-sm backdrop-blur-sm bg-white/60">
@@ -121,7 +161,9 @@ function CreateBlog() {
                             id="coverImage"
                             accept="image/*"
                             className="hidden"
+                            onFocus={() => setIsEmpty(false)}
                             onChange={handleImageChange}
+
                         />
 
                         {/* Upload Box */}
@@ -162,6 +204,8 @@ function CreateBlog() {
                         <input
                             type="text"
                             id="title"
+                            onFocus={() => setIsEmpty(false)}
+                            value={title}
                             placeholder="e.g., Top 10 Travel Destinations in Sri Lanka"
                             className="w-full px-4 py-2 transition duration-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                             onChange={(e) => setTitle(e.target.value)}
@@ -176,6 +220,8 @@ function CreateBlog() {
                         <textarea
                             id="content"
                             rows="8"
+                            onFocus={() => setIsEmpty(false)}
+                            value={content}
                             placeholder="Start writing your blog post content here..."
                             className="w-full px-4 py-2 transition duration-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                             onChange={(e) => setContent(e.target.value)}
@@ -192,13 +238,20 @@ function CreateBlog() {
                             </label>
                             <select
                                 id="category"
+                                value={category}
                                 className="w-full px-4 py-2 transition duration-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                                 onChange={(e) => setCategory(e.target.value)}
+                                onFocus={() => setIsEmpty(false)}
+
                             >
                                 <option value="" disabled>Select a Category</option>
                                 <option value="Travel">Travel</option>
                                 <option value="Technology">Technology</option>
                                 <option value="Food">Food</option>
+                                <option value="Lifestyle">Lifestyle</option>
+                                <option value="Fashion">Fashion</option>
+                                <option value="Music">Music</option>
+                                <option value="Art">Art</option>
                                 {/* Add more categories as needed */}
                             </select>
                         </div>
@@ -211,12 +264,19 @@ function CreateBlog() {
                             <input
                                 type="text"
                                 id="tags"
+                                onFocus={() => setIsEmpty(false)}
                                 placeholder="e.g., Beach, Culture, Mountains, Asia"
+                                value={tags}
                                 className="w-full px-4 py-2 transition duration-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                                 onChange={(e) => setTags(e.target.value)}
+
                             />
                         </div>
                     </div>
+
+                    {isEmpty ? <p className='text-xs font-semibold text-red-500'> ⚠️ {emptyMsg}</p> : ""}
+                    {isError ? <p className='text-xs font-semibold text-red-500'>❌ {errorMsg}</p> : ""}
+                    {isSuccess ? <p className='text-xs font-semibold text-green-600'>✅ {successMsg}</p> : ""}
 
                     {/* 5. ✨ Submit Button */}
                     <div className="flex justify-end">
@@ -237,7 +297,10 @@ function CreateBlog() {
                     </div>
                 </form>
             </div>
+            
         </div>
+        <Footer/>
+        </>
     );
 }
 

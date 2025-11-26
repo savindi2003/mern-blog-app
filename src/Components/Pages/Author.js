@@ -3,6 +3,7 @@ import { useParams , useNavigate } from "react-router-dom";
 import axios from "axios";
 import Nav from '../Nav/Nav'
 import BlogListItem from '../BlogItem/BlogListItem'
+import Footer from "../Nav/Footer";
 
 function Author() {
 
@@ -81,7 +82,7 @@ function Author() {
                 </div>
 
             </div>
-
+<Footer/>
         </div>
     )
 }

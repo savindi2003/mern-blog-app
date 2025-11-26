@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react'
 import Nav from '../Nav/Nav'
 import { BiPencil, BiListUl, BiBookmark } from 'react-icons/bi';
 import axios from 'axios';
-import { useNavigate , Link } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
+import UserNotLogin from './UserNotLogin';
+import Loading from './Loading';
+import Footer from '../Nav/Footer';
+
+
 
 
 function Account() {
@@ -27,7 +32,7 @@ function Account() {
         history('/auth');
     }
 
-   
+
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -116,17 +121,19 @@ function Account() {
         } catch (error) {
             console.log(error);
             alert("Profile update failed");
-        }finally {
-        setIsUpdating(false);
-    }
+        } finally {
+            setIsUpdating(false);
+        }
 
 
     }
 
 
-    if (!user) return <p>Loading...</p>;
+    if (!user) return (
+        <UserNotLogin/>
+    );
 
-    if (!account) return <p className="mt-32 text-center">Loading...</p>;
+    if (!account) return <Loading/>;
 
     return (
 
@@ -193,7 +200,7 @@ function Account() {
                                         type="text"
                                         id="username"
                                         value={updatedUsername}
-                                        onChange={(e)=> setUpdatedUsername(e.target.value)}
+                                        onChange={(e) => setUpdatedUsername(e.target.value)}
                                         className="w-full px-4 py-2 transition duration-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500"
                                         placeholder="Enter your new username"
                                     />
@@ -218,7 +225,7 @@ function Account() {
                                         id="bio"
                                         rows="3"
                                         value={updatedBio}
-                                        onChange={(e)=> setUpdatedBio(e.target.value)}
+                                        onChange={(e) => setUpdatedBio(e.target.value)}
                                         className="w-full px-4 py-2 transition duration-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500"
                                         placeholder="Tell us a little about yourself..."
                                     ></textarea>
@@ -234,15 +241,15 @@ function Account() {
                                         disabled={isUpdating}
                                     >
 
-                                      {isUpdating ? (
-                                        <svg className="w-5 h-5 mr-2 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-                        </svg>
+                                        {isUpdating ? (
+                                            <svg className="w-5 h-5 mr-2 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                                            </svg>
 
-                                      ) : "Update Profile" } 
+                                        ) : "Update Profile"}
 
-                                        
+
                                     </button>
 
                                     <button
@@ -268,28 +275,28 @@ function Account() {
 
                             {/* Create Item */}
 
-<Link to="/new">
-                            <div className="flex items-center justify-between p-3 text-white transition duration-150 ease-in-out cursor-pointer rounded-t-xl hover:bg-purple-700">
-                                <div className="flex items-center gap-4">
-                                    <BiPencil className="text-lg" />
-                                    <span className="m-0">Create</span>
+                            <Link to="/new">
+                                <div className="flex items-center justify-between p-3 text-white transition duration-150 ease-in-out cursor-pointer rounded-t-xl hover:bg-purple-700">
+                                    <div className="flex items-center gap-4">
+                                        <BiPencil className="text-lg" />
+                                        <span className="m-0">Create</span>
+                                    </div>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-purple-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                                    </svg>
                                 </div>
-                                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-purple-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                                </svg>
-                            </div>
                             </Link>
 
                             <Link to="/update">
-                            <div className="flex items-center justify-between p-3 text-white transition duration-150 ease-in-out cursor-pointer hover:bg-purple-700">
-                                <div className="flex items-center gap-4">
-                                    <BiListUl className="text-lg" />
-                                    <span className="m-0">Posts</span>
+                                <div className="flex items-center justify-between p-3 text-white transition duration-150 ease-in-out cursor-pointer hover:bg-purple-700">
+                                    <div className="flex items-center gap-4">
+                                        <BiListUl className="text-lg" />
+                                        <span className="m-0">Posts</span>
+                                    </div>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-purple-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                                    </svg>
                                 </div>
-                                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-purple-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                                </svg>
-                            </div>
                             </Link>
 
                             {/* Saved Item */}
@@ -308,6 +315,7 @@ function Account() {
 
                 </div>
             </div>
+            <Footer/>
         </div>
     )
 }

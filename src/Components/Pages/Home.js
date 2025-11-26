@@ -4,6 +4,10 @@ import SearchBar from '../SearchBar/SearchBar' // Assuming this is imported else
 import BlogItem from '../BlogItem/BlogItem' // Assuming this is imported elsewhere
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import Loading from './Loading'
+import Footer from '../Nav/Footer'
+import MainPage from '../HomePageComponents/MainPage'
+import Categories from '../HomePageComponents/Categories'
 
 const URL = "http://localhost:5000/api/posts";
 
@@ -12,6 +16,8 @@ function Home() {
   const history = useNavigate();
 
   const [blogs, setBlogs] = useState([])
+  const [loading, setLoading] = useState(true);
+
 
   // ⭐️ MOCK USER ID: Replace this with your actual authenticated user's ID
   // For demonstration, I'm using an ID that exists in your sample 'likes' array: "691cb438a305bae6e5f1114f"
@@ -38,9 +44,18 @@ function Home() {
   }, []);
 
   const fetchData = async () => {
-    const res = await axios.get(URL)
+    setLoading(true); // Start loading
+  try {
+    const res = await axios.get(URL);
     setBlogs(res.data.blogs);
-    return res.data.blogs
+    setNoResults(res.data.blogs.length === 0);
+    setLoading(false); // Stop loading
+    return res.data.blogs;
+  } catch (err) {
+    console.error(err);
+    setLoading(false);
+  }
+
   }
 
   useEffect(() => {
@@ -65,7 +80,7 @@ function Home() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
 
-  const categories = ['All', 'Technology', 'Education', 'Travel', 'Lifestyle', 'Business'];
+  const categories = ['All', 'Technology', 'Food', 'Travel', 'Lifestyle', 'Fashion','Art','Music'];
 
   const handleSearch = async (e) => {
     // e.preventDefault();
@@ -101,6 +116,7 @@ function Home() {
     setIsOpen(false); // Close the dropdown after selection
   };
 
+
   return (
     <div className="min-h-screen bg-purple-50">
 
@@ -109,12 +125,15 @@ function Home() {
         <Nav />
       </div>
 
+      <MainPage/>
+      <Categories/>
+
       {/* Content below navbar */}
-      <div className="mt-20">
+      <div className="mt-5">
 
-        <div className='w-screen h-8'></div>
+        <div className='w-screen h-2'></div>
 
-        <div className='w-1/3 mx-auto mt-5 justify-self-center'>
+        <div className='w-1/3 mx-auto justify-self-center'>
           <form
             className="flex items-center w-full max-w-lg overflow-visible bg-white border border-gray-200 rounded-full shadow-lg" // NOTE: Changed to overflow-visible to show the list
             onSubmit={(e) => { e.preventDefault(); handleSearch(); }}
@@ -186,35 +205,33 @@ function Home() {
         </div>
 
         <div className="container px-4 py-8 mx-auto">
-          <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
-
-            {noResults ? (
-              <div>
-                No Results
-              </div>
-            ) : (
-              <>
-                {blogs && blogs.map((blog, i) => (
-                  <div key={i}
-                    onClick={() => history(`/blog/${blog._id}`)}
-                    className="cursor-pointer"
-                  >
-                    {/* ⭐️ 2. Pass currentUserId and onLikeUpdate function as props */}
-                    <BlogItem
-                      blog={blog}
-                      currentUserId={currentUserId}
-                      onLikeUpdate={handleListLikeUpdate}
-                    />
-                  </div>
-                ))}
-              </>
-            )}
-
-
-          </div>
+  {loading ? (
+    <div className="flex items-center justify-center w-full col-span-3 h-96">
+      <div className="w-16 h-16 border-4 border-purple-300 rounded-full border-t-purple-600 animate-spin"></div>
+    </div>
+  ) : noResults ? (
+    <div className="col-span-3 text-center text-gray-500">No Results</div>
+  ) : (
+    <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
+      {blogs.map((blog, i) => (
+        <div
+          key={i}
+          onClick={() => history(`/blog/${blog._id}`)}
+          className="cursor-pointer"
+        >
+          <BlogItem
+            blog={blog}
+            currentUserId={currentUserId}
+            onLikeUpdate={handleListLikeUpdate}
+          />
         </div>
-      </div>
+      ))}
+    </div>
+  )}
+</div>
 
+      </div>
+<Footer/>
     </div>
   )
 }

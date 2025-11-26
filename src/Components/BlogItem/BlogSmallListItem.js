@@ -41,7 +41,7 @@ function BlogSmallListItem({blog, isSelected, onClick}) {
                     <h2 className="mb-2 text-xl font-bold text-gray-900 line-clamp-2">
                         {title}
                     </h2>
-                    <p className="mb-3 text-sm text-justify text-gray-600 line-clamp-2">{content}</p>
+                    <p className="mb-3 mr-3 text-sm text-justify text-gray-600 line-clamp-4">{content}</p>
                 </div>
 
                 {/* Bottom row: Read More + Like/Comment */}

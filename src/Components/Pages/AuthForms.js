@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom'
+import { MdOutlineErrorOutline } from "react-icons/md";
 
 
 function AuthForms() {
@@ -11,13 +12,23 @@ function AuthForms() {
     const [isRegistering, setIsRegistering] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
+    const[isEmail,setIsEmail] = useState(true);
+    const[isPassword,setIsPassword] = useState(true);
+    const[isError,setIsError] = useState(false);
+    const[errorMsg,setErrorMsg] = useState("")
+    const[isSuccess,setIsSuccess] = useState(false);
+    const[successMsg,setSuccessMsg] = useState("")
+
+    const[isEmptyR,setIsEmptyR] = useState(false);
+    const[regMsg,setRegMsg] = useState("")
+
 
     const themeColor = 'indigo';
 
     //normal sign up
     const handleRegister = async (e) => {
         e.preventDefault();
-        setIsLoading(true);
+        
 
         const username = document.getElementById("reg-username").value;
         const email = document.getElementById("reg-email").value;
@@ -25,12 +36,34 @@ function AuthForms() {
         const confirmPassword = document.getElementById("reg-confirm-password").value;
         const bio = document.getElementById("reg-bio").value;
 
-        if (password !== confirmPassword) {
-            alert("Passwords do not match!");
-            return;
-        }
+        if(!username){
+            setIsEmptyR(true)
+           setRegMsg("Please enter your username")
+        }else if(!email){
+            setIsEmptyR(true)
+           setRegMsg("Please enter your email")
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setIsEmptyR(true)
+           setRegMsg("Please enter a valid email address")
+        }else if(!password){
+            setIsEmptyR(true)
+            setRegMsg("Please enter your password")
+        }else if(!confirmPassword){
+            setIsEmptyR(true)
+            setRegMsg("Please re enter your username")
+        }else if(!bio){
+            setIsEmptyR(true)
+            setRegMsg("Please enter your bio")
+        }else if (password !== confirmPassword) {
+            setIsEmptyR(true)
+            setRegMsg("Passwords do not match")
+        }else{
+            setIsLoading(true);
+            setIsEmptyR(false)
+            
 
-        try {
+
+            try {
             const res = await axios.post("http://localhost:5000/api/auth/register", {
                 username,
                 email,
@@ -38,36 +71,62 @@ function AuthForms() {
                 bio
             });
 
-            alert(res.data.message); // Registered successfully
+            setIsSuccess(true)
+            setSuccessMsg(res.data.message) 
             setIsRegistering(false);
+            setIsSuccess(false)
 
         } catch (err) {
             console.error(err);
-            alert(err.response?.data?.message || "Registration failed!");
+            // alert(err.response?.data?.message || "Registration failed!");
+            setIsError(true)
+            setErrorMsg(err.response?.data?.message || "Registration failed!")
         } finally {
             setIsLoading(false); // stop loading
         }
+
+
+        }
+
+        
 
     }
 
     //normal sign in
     const handleLogin = async (e) => {
         e.preventDefault();
-        setIsLoading(true);
+        
 
         const email = document.getElementById("login-email").value;
         const password = document.getElementById("login-password").value;
 
-        try {
+        if(!email){
+            setIsEmail(false)
+        }else if(!password){
+            setIsPassword(false)
+        }else{
+            setIsEmail(true)
+            setIsPassword(true)
+            setIsLoading(true);
+            
+
+            try {
             const res = await axios.post("http://localhost:5000/api/auth/login", { email, password });
             localStorage.setItem('token', res.data.token);
-            alert("Logged in successfully");
+            setIsSuccess(true)
+            setSuccessMsg("Logged in successfully")
             history('/account');
         } catch (err) {
-            alert(err.response?.data?.message || "Login failed");
+            // alert(err.response?.data?.message || "Login failed");
+            setIsError(true)
+            setErrorMsg(err.response?.data?.message || "Login failed")
         } finally {
             setIsLoading(false); // stop loading
         }
+        
+        }
+
+        
     };
 
 
@@ -85,6 +144,7 @@ function AuthForms() {
                         type="text"
                         id="reg-username"
                         placeholder="Choose a username"
+                        onFocus={()=>setIsEmptyR(false)}
                         className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-100`}
                     />
                 </div>
@@ -96,6 +156,7 @@ function AuthForms() {
                         type="email"
                         id="reg-email"
                         placeholder="your@email.com"
+                        onFocus={()=>setIsEmptyR(false)}
                         className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-100`}
                     />
                 </div>
@@ -108,6 +169,7 @@ function AuthForms() {
                             type="password"
                             id="reg-password"
                             placeholder="Enter password"
+                            onFocus={()=>setIsEmptyR(false)}
                             className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-100`}
                         />
                     </div>
@@ -118,6 +180,7 @@ function AuthForms() {
                             type="password"
                             id="reg-confirm-password"
                             placeholder="Re-enter password"
+                            onFocus={()=>setIsEmptyR(false)}
                             className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-100`}
                         />
                     </div>
@@ -130,9 +193,14 @@ function AuthForms() {
                         id="reg-bio"
                         rows="2"
                         placeholder="Tell us about yourself..."
+                        onFocus={()=>setIsEmptyR(false)}
                         className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-100`}
                     ></textarea>
                 </div>
+
+                {isEmptyR ? <p className='text-xs font-semibold text-red-500'> ⚠️ {regMsg}</p> : "" }
+                {isError ? <p className='text-xs font-semibold text-red-500'>❌ {errorMsg}</p> : ""}
+                {isSuccess ? <p className='text-xs font-semibold text-green-600'>✅ {successMsg}</p> : ""}
 
                 {/* Submit Button */}
                 <button
@@ -160,6 +228,8 @@ function AuthForms() {
                         }}
                         onError={() => {
                             console.log("Google Login Failed");
+                            setIsError(true)
+                            setErrorMsg("Google Login Failed")
                         }}
                     />
                 </div>
@@ -186,6 +256,7 @@ function AuthForms() {
                         type="text"
                         id="login-email"
                         placeholder="Enter email or username"
+                        onFocus={()=>setIsEmail(true)}
                         className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-100`}
                     />
                 </div>
@@ -196,11 +267,17 @@ function AuthForms() {
                     <input
                         type="password"
                         id="login-password"
+                        onFocus={()=>setIsPassword(true)}
                         placeholder="Enter password"
                         className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-100`}
                     />
                     <p className={`mt-1 text-xs text-right text-purple-600 cursor-pointer hover:underline font-semibold`}>Forgot Password?</p>
                 </div>
+
+                {isEmail ? "" : <p className='text-xs font-semibold text-red-500'> ⚠️ Please enter your email</p>}
+                {isPassword ? "" : <p className='text-xs font-semibold text-red-500'>⚠️ Please enter your password</p>}
+                {isError ? <p className='text-xs font-semibold text-red-500'>❌ {errorMsg}</p> : ""}
+                {isSuccess ? <p className='text-xs font-semibold text-green-600'>✅ {successMsg}</p> : ""}
 
                 {/* Submit Button */}
                 <button
@@ -234,11 +311,15 @@ function AuthForms() {
                                 history('/account');
                             } catch (err) {
                                 console.error(err);
-                                alert("Google login failed");
+                                // alert("Google login failed");
+                                setIsError(true)
+                            setErrorMsg("Google Login Failed")
                             }
                         }}
                         onError={() => {
                             console.log("Google Login Failed");
+                            setIsError(true)
+                            setErrorMsg("Google Login Failed")
                         }}
                     />
 

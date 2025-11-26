@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate,useLocation } from 'react-router-dom'
 
 function UpdateForm({ blog }) {
 
     const history = useNavigate();
+    const location = useLocation();
 
     const [id, setId] = useState('');
     const [title, setTitle] = useState('');
@@ -14,6 +15,13 @@ function UpdateForm({ blog }) {
     const [coverImage, setCoverImage] = useState(null);
     const [previewImage, setPreviewImage] = useState('');
     const [loading, setLoading] = useState(false);
+
+    const [isEmpty, setIsEmpty] = useState(false);
+    const [emptyMsg, setEmptyMsg] = useState("")
+    const [isError, setIsError] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("")
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [successMsg, setSuccessMsg] = useState("")
 
 
     useEffect(() => {
@@ -44,52 +52,77 @@ function UpdateForm({ blog }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
+        
 
-        try {
-            const formData = new FormData();
-            formData.append('title', title);
-            formData.append('content', content);
-            formData.append('category', category);
-            formData.append('tags', tags); // backend will split
-            if (coverImage) {
-                formData.append('coverImage', coverImage);
-            }
+        if (!blog) {
+            setIsEmpty(true)
+            setEmptyMsg("Please select the post do you want to updated");
+        } else {
 
-            const response = await axios.put(`http://localhost:5000/api/posts/${id}`, formData,
-                {
-                    headers: { 'Content-Type': 'multipart/form-data' }
+            setLoading(true);
+            setIsEmpty(false)
+
+            try {
+                const formData = new FormData();
+                formData.append('title', title);
+                formData.append('content', content);
+                formData.append('category', category);
+                formData.append('tags', tags); // backend will split
+                if (coverImage) {
+                    formData.append('coverImage', coverImage);
                 }
-            );
 
-            console.log('Blog updated:', response.data);
-            alert('Blog updated successfully!');
+                const response = await axios.put(`http://localhost:5000/api/posts/${id}`, formData,
+                    {
+                        headers: { 'Content-Type': 'multipart/form-data' }
+                    }
+                );
 
-        } catch (error) {
-            console.error('Update failed:', error);
-            alert('Failed to update blog.');
-        } finally {
-            setLoading(false);
+                console.log('Blog updated:', response.data);
+                alert('Blog updated successfully!');
+
+                setIsSuccess(true)
+                setSuccessMsg("Blog updated successfully. Check now")
+                setIsEmpty(false)
+
+                setTitle("");
+                setContent("");
+                setCategory("");
+                setTags("");
+                setCoverImage(null);
+                setPreviewImage(null);
+
+                window.location.reload();
+
+
+            } catch (error) {
+                console.error('Update failed:', error);
+                setIsSuccess(false)
+                setIsError(true)
+                setErrorMsg("Opps.. Something went wrong. Please try again later")
+            } finally {
+                setLoading(false);
+            }
         }
     }
 
     const handleDelete = async () => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this blog?");
-    if (!confirmDelete) return;
+        const confirmDelete = window.confirm("Are you sure you want to delete this blog?");
+        if (!confirmDelete) return;
 
-    try {
-        setLoading(true);
-        await axios.delete(`http://localhost:5000/api/posts/${id}`);
-        alert("Blog deleted successfully!");
-        history('/update')
-        // Optional: redirect or update parent component state
-    } catch (error) {
-        console.error("Delete failed:", error);
-        alert("Failed to delete blog.");
-    } finally {
-        setLoading(false);
-    }
-};
+        try {
+            setLoading(true);
+            await axios.delete(`http://localhost:5000/api/posts/${id}`);
+            alert("Blog deleted successfully!");
+            window.location.reload();
+            // Optional: redirect or update parent component state
+        } catch (error) {
+            console.error("Delete failed:", error);
+            alert("Failed to delete blog.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div>
@@ -188,6 +221,10 @@ function UpdateForm({ blog }) {
                                 <option value="Travel">Travel</option>
                                 <option value="Technology">Technology</option>
                                 <option value="Food">Food</option>
+                                <option value="Lifestyle">Lifestyle</option>
+                                <option value="Fashion">Fashion</option>
+                                <option value="Music">Music</option>
+                                <option value="Art">Art</option>
                                 {/* Add more categories as needed */}
                             </select>
                         </div>
@@ -207,6 +244,10 @@ function UpdateForm({ blog }) {
                             />
                         </div>
                     </div>
+
+                    {isEmpty ? <p className='text-xs font-semibold text-red-500'> ⚠️ {emptyMsg}</p> : ""}
+                    {isError ? <p className='text-xs font-semibold text-red-500'>❌ {errorMsg}</p> : ""}
+                    {isSuccess ? <p className='text-xs font-semibold text-green-600'>✅ {successMsg}</p> : ""}
 
                     {/* 5. ✨ Submit Button */}
                     <div className="flex justify-end">

@@ -7,6 +7,8 @@ import BlogSmallItem from '../BlogItem/BlogSmallItem'
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Loading from './Loading';
+import Footer from '../Nav/Footer'
 
 
 function SingleView() {
@@ -144,7 +146,7 @@ function SingleView() {
 }, [blog]);
 
 
-    if (!blog) return <div>Loading...</div>;
+    if (!blog) return <Loading/>;
 
     return (
         <div className='min-h-screen bg-purple-50'>
@@ -283,7 +285,7 @@ function SingleView() {
 
 
             </div>
-
+<Footer/>
         </div>
     )
 }

@@ -1,0 +1,8 @@
+/* Custom CSS for Animation Delays (Blob Shapes) */
+.custom-delay-2000 {
+  animation-delay: 2s;
+}
+
+.custom-delay-4000 {
+  animation-delay: 4s;
+}
